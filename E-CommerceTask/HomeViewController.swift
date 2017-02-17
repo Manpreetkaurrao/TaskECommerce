@@ -10,6 +10,8 @@ import UIKit
 import CoreData
 class HomeViewController: UIViewController
 {
+    @IBOutlet var imageViewMoving: UIImageView!
+    @IBOutlet var imageView: UIImageView!
     @IBOutlet var tableView: UITableView!
     var catergoryNameList : [String] = []
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -25,7 +27,9 @@ class HomeViewController: UIViewController
     }
     override func viewWillAppear(_ animated: Bool)
     {
+        
         super.viewWillAppear(true)
+        tableView.backgroundView = imageView
         catergoryNameList = []
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
@@ -45,10 +49,10 @@ class HomeViewController: UIViewController
                 catergoryNameList = []
                 for  cname in fetchedValues
                 {
-                    matchidentity.append(cname.value(forKeyPath: "parentId") as! String? ?? "n/a")
+                    matchidentity.append(cname.value(forKeyPath: "parentId") as! String? ?? "")
                     if strcmp(matchidentity, "0") == 0
                     {
-                        catergoryNameList.append(cname.value(forKeyPath: "categoryName") as! String? ?? "n/a")
+                        catergoryNameList.append(cname.value(forKeyPath: "categoryName") as! String? ?? "")
                         matchidentity = ""
                     }
                     matchidentity = ""
@@ -60,7 +64,16 @@ class HomeViewController: UIViewController
             fatalError("Could not fetch")
         }
         self.tableView.reloadData()
-        //loadtabledata()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        /*let orgY = self.imageViewMoving.center.y
+        self.imageViewMoving.center.y -= view.bounds.height
+        UIView.animateWithDuration(0.5, delay: 0.3, options: nil, animations: {
+            self.imageViewMoving.center.y = orgY
+        }, completion: nil)
+        UIView.animate(withDuration: 0.5, delay: 0.3, options: <#T##UIViewAnimationOptions#>, animations: <#T##() -> Void#>, completion: <#T##((Bool) -> Void)?##((Bool) -> Void)?##(Bool) -> Void#>)*/
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -73,7 +86,6 @@ class HomeViewController: UIViewController
             print("\(currentCellValue)")
         }
     }
-    
 }
 
 //MARK: -> UITableViewDataSource, UITableViewDelegate
@@ -102,79 +114,15 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource
         currentCellValue = ""
         currentCellValue = catergoryNameList[indexPath.row]
         self.performSegue(withIdentifier: "listShowingSegue", sender: self)
-        //let ListViewController = self.storyboard?.instantiateViewController(withIdentifier: "listViewController") as! ListViewController
-        //self.navigationController?.pushViewController(ListViewController, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
+    {
+        cell.backgroundColor = .clear
     }
 }
 
 
 
 
-/*func loadtabledata()
- {
- catergoryNameList = []
- guard let appDelegate =
- UIApplication.shared.delegate as? AppDelegate else {
- return
- }
- let managedContext = appDelegate.persistentContainer.viewContext
- let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Categorylist")
- do
- {
- let fetchedValues = try appDelegate.persistentContainer.viewContext.fetch(fetchRequest)
- if fetchedValues.count == 0
- {
- catergoryNameList.insert("", at: 0)
- }
- else if flagForSelection == 0
- {
- catergoryNameList = []
- for  cname in fetchedValues
- {
- matchidentity.append(cname.value(forKeyPath: "parentId") as! String? ?? "n/a")
- if strcmp(matchidentity, "0") == 0
- {
- catergoryNameList.append(cname.value(forKeyPath: "categoryName") as! String? ?? "n/a")
- matchidentity = ""
- }
- matchidentity = ""
- }
- }
- else if flagForSelection == 1
- {
- catergoryNameList = []
- for  cname in fetchedValues
- {
- tempCategoryName.append(cname.value(forKeyPath: "categoryName") as! String? ?? "")
- tempParentIdentity.append(cname.value(forKeyPath: "id") as! String? ?? "")
- if strcmp(currentCellValue, tempCategoryName) == 0
- {
- tempCategoryName = ""
- break
- }
- else
- {
- tempCategoryName = ""
- tempParentIdentity = ""
- }
- }
- for  cname in fetchedValues
- {
- matchidentity.append(cname.value(forKeyPath: "parentId") as! String? ?? "n/a")
- if strcmp(matchidentity, tempParentIdentity) == 0
- {
- catergoryNameList.append(cname.value(forKeyPath: "categoryName") as! String? ?? "n/a")
- matchidentity = ""
- }
- matchidentity = ""
- }
- }
- }
- catch
- {
- fatalError("Could not fetch")
- }
- self.tableView.reloadData()
- 
- }*/
 

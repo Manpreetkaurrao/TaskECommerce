@@ -21,6 +21,7 @@
 		1DC4FDCA1E55AEF6001FBDFE /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC4FDC91E55AEF6001FBDFE /* ListTableViewCell.swift */; };
 		1DC4FDCE1E55C751001FBDFE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1DC4FDCD1E55C751001FBDFE /* Main.storyboard */; };
 		1DC4FDD21E55E286001FBDFE /* productsName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC4FDD11E55E286001FBDFE /* productsName.swift */; };
+		1DD4CDDF1E56CF46001F1BDD /* ProductDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD4CDDE1E56CF46001F1BDD /* ProductDetailViewController.swift */; };
 		1DE5535D1E54261900A6F19F /* homeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE5535C1E54261900A6F19F /* homeTableViewCell.swift */; };
 		1DE5535F1E5429A400A6F19F /* categoriesName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE5535E1E5429A400A6F19F /* categoriesName.swift */; };
 		1DFBA1BA1E530FC700618CEA /* Categorylist+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFBA1B61E530FC700618CEA /* Categorylist+CoreDataClass.swift */; };
@@ -46,6 +47,7 @@
 		1DC4FDC91E55AEF6001FBDFE /* ListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListTableViewCell.swift; sourceTree = "<group>"; };
 		1DC4FDCD1E55C751001FBDFE /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		1DC4FDD11E55E286001FBDFE /* productsName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = productsName.swift; sourceTree = "<group>"; };
+		1DD4CDDE1E56CF46001F1BDD /* ProductDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDetailViewController.swift; sourceTree = "<group>"; };
 		1DE5535C1E54261900A6F19F /* homeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = homeTableViewCell.swift; sourceTree = "<group>"; };
 		1DE5535E1E5429A400A6F19F /* categoriesName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = categoriesName.swift; sourceTree = "<group>"; };
 		1DFBA1B61E530FC700618CEA /* Categorylist+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Categorylist+CoreDataClass.swift"; path = "../Categorylist+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				1DC4FDC71E55A800001FBDFE /* ListViewController.swift */,
 				1DC4FDC91E55AEF6001FBDFE /* ListTableViewCell.swift */,
 				1DC4FDD11E55E286001FBDFE /* productsName.swift */,
+				1DD4CDDE1E56CF46001F1BDD /* ProductDetailViewController.swift */,
 			);
 			path = "E-CommerceTask";
 			sourceTree = "<group>";
@@ -212,6 +215,7 @@
 				1DE5535D1E54261900A6F19F /* homeTableViewCell.swift in Sources */,
 				1DFBA1BB1E530FC700618CEA /* Categorylist+CoreDataProperties.swift in Sources */,
 				1DA9E0461E51C7C2000EA791 /* HomeViewController.swift in Sources */,
+				1DD4CDDF1E56CF46001F1BDD /* ProductDetailViewController.swift in Sources */,
 				1DC4FDC81E55A800001FBDFE /* ListViewController.swift in Sources */,
 				1DA9E05C1E51C868000EA791 /* AddCategory.xcdatamodeld in Sources */,
 			);

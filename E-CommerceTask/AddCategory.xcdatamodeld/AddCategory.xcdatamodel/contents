@@ -10,7 +10,7 @@
         <attribute name="descriptionProduct" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="parentid" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="price" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="price" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="productName" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Categorylist" inverseName="product" inverseEntity="Categorylist" syncable="YES"/>
     </entity>

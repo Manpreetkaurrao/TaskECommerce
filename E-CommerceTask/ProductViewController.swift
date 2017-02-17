@@ -15,7 +15,7 @@ class ProductViewController: UIViewController
     @IBOutlet var txtProductName: UITextField!
     @IBOutlet var txtProductPrice: UITextField!
     @IBOutlet var txtProductDesc: UITextField!
-    
+    var flagforpicker = 0
     var identity = 0
     var productNameList : [String] = []
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -28,14 +28,79 @@ class ProductViewController: UIViewController
     var contentsForPicker : [String] = []
     var temporary = ""
     var flag = 0
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        loadpickerview()
+    }
+    
+    func loadpickerview()
+    {
+        contentsForPicker = []
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return
+        }
+        let context = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Categorylist")
+        do
+        {
+            let fetchedValues = try appDelegate.persistentContainer.viewContext.fetch(fetchRequest)
+            if fetchedValues.count == 0
+            {
+                contentsForPicker.insert("No category for adding product", at: 0)
+            }
+            else
+            {
+                for  cname in fetchedValues
+                {
+                    tempIdentity = ""
+                    tempIdentity.append(cname.value(forKeyPath: "id") as! String? ?? "")
+                    print("\(tempIdentity)")
+                    for cname in fetchedValues
+                    {
+                        flagforpicker = 1
+                        tempParentIdentity = ""
+                        tempParentIdentity.append(cname.value(forKeyPath: "parentId") as! String? ?? "")
+                        if tempIdentity == tempParentIdentity
+                        {
+                            print("condition true")
+                            flagforpicker = 0
+                            break
+                        }
+                    }
+                    if flagforpicker == 1
+                    {
+                        for cname in fetchedValues
+                        {
+                            var id = ""
+                            id.append(cname.value(forKeyPath: "id") as! String? ?? "")
+                            if tempIdentity == id
+                            {
+                                contentsForPicker.append(cname.value(forKeyPath: "categoryName") as! String? ?? "n/a")
+                                print("\(contentsForPicker)")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+            fatalError("error")
+        }
+        self.pickerView.reloadAllComponents()
+    }
+
+    
     @IBAction func btnSave(_ sender: UIButton)
     {
-    
+        saveDataInCoreData()
     }
     
     func alertmessage()
@@ -83,132 +148,61 @@ class ProductViewController: UIViewController
             category.setValue(text1, forKey: "productName")
             category.setValue(text2, forKey: "price")
             category.setValue(text3, forKey: "descriptionProduct")
-            /*if (strcmp(temporary, top) == 0)
+            print("\(text1),\(text2),\(text3)")
+            let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Categorylist")
+            do
             {
-                category.setValue("0", forKey: "parentId")
-                identity = identity + 1
-                category.setValue(String(identity), forKey: "id")
-                print("saving as parent id")
-                print("\(text1),\(identity)")
-                
-            }
-            else
-            {*/
-                let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Categorylist")
+                let fetchedValues = try context.fetch(fetchRequest)
+                for  cname in fetchedValues
+                {
+                    tempCategoryName = ""
+                    tempIdentity = ""
+                    tempCategoryName.append(cname.value(forKeyPath: "categoryName") as! String? ?? "")
+                    tempIdentity.append(cname.value(forKeyPath: "id") as! String? ?? "")
+                    if (strcmp(temporary, tempCategoryName) == 0)
+                    {
+                        identity = identity + 1
+                        category.setValue(String(identity), forKey: "id")
+                        category.setValue(tempIdentity, forKey: "parentid")
+                        print("\(identity),\(tempIdentity)")
+                    }
+                }
                 do
                 {
-                    let fetchedValues = try context.fetch(fetchRequest)
-                    for  cname in fetchedValues
-                    {
-                        tempCategoryName.append(cname.value(forKeyPath: "categoryName") as! String? ?? "")
-                        tempIdentity.append(cname.value(forKeyPath: "id") as! String? ?? "")
-                        if (strcmp(temporary, tempCategoryName) == 0)
-                        {
-                            print("saving as child id")
-                            category.setValue(tempIdentity, forKey: "parentId")
-                            identity = identity + 1
-                            category.setValue(String(identity), forKey: "id")
-                            print("\(text1),id:\(identity),parentid:\(tempIdentity)")
-                            tempCategoryName = ""
-                            tempIdentity = ""
-                            break
-                        }
-                        tempCategoryName = ""
-                        tempIdentity = ""
-                    }
-                    do
-                    {
-                        try context.save()
-                        let alertController = UIAlertController(title: "Success", message:
+                    try context.save()
+                    let alertController = UIAlertController(title: "Success", message:
                             "Successfully added category", preferredStyle: UIAlertControllerStyle.alert)
                         alertController.addAction(UIAlertAction(title: "Congratulations", style: UIAlertActionStyle.default,handler: nil))
                         self.present(alertController, animated: true, completion: nil)
-                    }
-                    catch
-                    {
-                        fatalError("error in storing data")
-                    }
                 }
+                    
                 catch
                 {
-                    fatalError("error")
+                  fatalError("error in storing data")
                 }
-            //}
-        }
-    }
-    
-    func loadpickerview()
-    {
-        contentsForPicker = []
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return
-        }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Categorylist")
-        do
-        {
-            let fetchedValues = try appDelegate.persistentContainer.viewContext.fetch(fetchRequest)
-            if fetchedValues.count == 0
-            {
-                contentsForPicker.insert("No category for adding product", at: 0)
-            }
-                
-            else
-            {
-                //contentsForPicker.insert("TopLevel", at: 0)
-                for  cname in fetchedValues
-                {
-                    //tempCategoryName.append(cname.value(forKeyPath: "categoryName") as! String? ?? "")
-                    tempIdentity.append(cname.value(forKeyPath: "id") as! String? ?? "")
-                    for cname in fetchedValues
-                    {
-                        tempParentIdentity.append(cname.value(forKeyPath: "parentId") as! String? ?? "")
-                        if tempIdentity == tempParentIdentity
-                        {
-                            tempParentIdentity = ""
-                            tempIdentity = ""
-                            break
-                        }
-                    }
-                }
-            }
-            if (strcmp(temporary, tempCategoryName) == 0)
-            {
-                print("saving as child id")
-                category.setValue(tempIdentity, forKey: "parentId")
-                identity = identity + 1
-                category.setValue(String(identity), forKey: "id")
-                print("\(text1),id:\(identity),parentid:\(tempIdentity)")
-                tempCategoryName = ""
-                tempIdentity = ""
-                break
-            }
-            tempCategoryName = ""
-            tempIdentity = ""
-            do
-            {
-                try context.save()
-                let alertController = UIAlertController(title: "Success", message:
-                        "Successfully added category", preferredStyle: UIAlertControllerStyle.alert)
-                    alertController.addAction(UIAlertAction(title: "Congratulations", style: UIAlertActionStyle.default,handler: nil))
-                    self.present(alertController, animated: true, completion: nil)
             }
             catch
             {
-                fatalError("error in storing data")
+                fatalError("error")
             }
+        }
+        do
+        {
+            try context.save()
+            let alertController = UIAlertController(title: "Success", message:
+                "Successfully added category", preferredStyle: UIAlertControllerStyle.alert)
+            alertController.addAction(UIAlertAction(title: "Congratulations", style: UIAlertActionStyle.default,handler: nil))
+            self.present(alertController, animated: true, completion: nil)
         }
         catch
         {
-            fatalError("error")
+            fatalError("error in storing data")
         }
-        contentsForPicker.append(cname.value(forKeyPath: "categoryName") as! String? ?? "n/a")
-        self.pickerView.reloadAllComponents()
     }
-
     
 }
+
+
 //MARK: -> UIPickerViewDataSource, UIPickerViewDelegate
 
 extension ProductViewController: UIPickerViewDelegate, UIPickerViewDataSource
@@ -220,7 +214,7 @@ extension ProductViewController: UIPickerViewDelegate, UIPickerViewDataSource
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int
     {
-        return 0
+        return contentsForPicker.count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
@@ -229,6 +223,7 @@ extension ProductViewController: UIPickerViewDelegate, UIPickerViewDataSource
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         temporary = contentsForPicker[row]
-        self.pickerView.reloadAllComponents()
+        loadpickerview()
+        //self.pickerView.reloadAllComponents()
     }
 }

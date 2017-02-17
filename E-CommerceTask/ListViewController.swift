@@ -16,11 +16,15 @@ class ListViewController: UIViewController
     var tempParentIdentity = ""
     var tempCategoryName = ""
     var matchidentity = ""
+    var tempIdentity = ""
     var received : String = ""
     var tempvalue : String = ""
     var catergoryNameList : [String] = []
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var categories : [NSManagedObject] = []
+    var flagForSelection = 0
+    var productIdentity = ""
+    var flagGoToProductDesc = 0
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -36,13 +40,10 @@ class ListViewController: UIViewController
     {
         _ = navigationController?.popViewController(animated:true)
     }
+    
     func loadtabledata()
     {
         catergoryNameList = []
-        guard let appDelegate =
-        UIApplication.shared.delegate as? AppDelegate else {
-            return
-        }
         let managedContext = appDelegate.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Categorylist")
         do
@@ -50,50 +51,123 @@ class ListViewController: UIViewController
             let fetchedValues = try appDelegate.persistentContainer.viewContext.fetch(fetchRequest)
             if fetchedValues.count == 0
             {
-                print("in if section")
                 catergoryNameList.insert("", at: 0)
             }
             
             else
             {
-                print("in else section")
                 catergoryNameList = []
-                print("\(tempvalue)")
                 for  cname in fetchedValues
                 {
+                    tempParentIdentity = ""
+                    tempCategoryName = ""
                     tempCategoryName.append(cname.value(forKeyPath: "categoryName") as! String? ?? "")
                     tempParentIdentity.append(cname.value(forKeyPath: "id") as! String? ?? "")
                     if strcmp(tempvalue, tempCategoryName) == 0
                     {
-                        tempCategoryName = ""
                         break
                     }
-                    else
-                    {
-                        tempCategoryName = ""
-                        tempParentIdentity = ""
-                    }
                 }
-                for  cname in fetchedValues
+                for cname in fetchedValues
                 {
+                    matchidentity = ""
+                    tempIdentity = ""
                     matchidentity.append(cname.value(forKeyPath: "parentId") as! String? ?? "")
+                    tempIdentity.append(cname.value(forKeyPath: "id") as! String? ?? "")
                     if strcmp(matchidentity, tempParentIdentity) == 0
                     {
-                        print("hello")
+                        flagForSelection = 1
                         catergoryNameList.append(cname.value(forKeyPath: "categoryName") as! String? ?? "")
-                        matchidentity = ""
+                        continue
                     }
-                    matchidentity = ""
+                    flagForSelection = 0
+                }
+                loadProductList()
+            }
+        }
+        catch
+        {
+            fatalError("Could not fetch")
+        }
+        self.tableView.reloadData()
+    }
+    
+    func loadProductList()
+    {
+        if flagForSelection == 0
+        {
+            print("product list")
+            let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Productlist")
+            do
+            {
+                let fetchedValues = try appDelegate.persistentContainer.viewContext.fetch(fetchRequest)
+                if fetchedValues.count == 0
+                {
+                    catergoryNameList.insert("", at: 0)
+                }
+                    
+                else
+                {
+                    catergoryNameList = []
+                    for  pname in fetchedValues
+                    {
+                        productIdentity = ""
+                        productIdentity.append(pname.value(forKeyPath: "parentid") as! String? ?? "")
+                        if strcmp(productIdentity, tempIdentity) == 0
+                        {
+                            catergoryNameList.append(pname.value(forKeyPath: "productName") as! String? ?? "")
+                        }
+                    }
                 }
             }
-     }
-     catch
-     {
-        fatalError("Could not fetch")
-     }
-     self.tableView.reloadData()
-     
-     }
+            catch
+            {
+                fatalError("error")
+            }
+        }
+    }
+    func loadsegue()
+    {
+        if flagGoToProductDesc == 1
+        {
+            self.performSegue(withIdentifier: "segueProductDetail", sender: self)
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        if segue.identifier == "segueProductDetail"
+        {
+            let listvc : ProductDetailViewController = segue.destination as! ProductDetailViewController
+            listvc.received = tempvalue
+            print("\(listvc.received)")
+            print("\(tempvalue)")
+        }
+    }
+    
+    func productselected()
+    {
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Categorylist")
+        do
+        {
+            let fetchedValues = try appDelegate.persistentContainer.viewContext.fetch(fetchRequest)
+            for  pname in fetchedValues
+            {
+                var productName = ""
+                productName.append(pname.value(forKeyPath: "productName") as! String? ?? "")
+                if strcmp(tempvalue, productName) == 0
+                {
+                    flagGoToProductDesc = 1
+                }
+            }
+        }
+        catch
+        {
+            fatalError("error")
+        }
+    }
+    
 }
 
 //MARK: -> UITableViewDelegate, UITableViewDataSource
@@ -102,7 +176,6 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        print("\(catergoryNameList.count)")
         return catergoryNameList.count
     }
     
@@ -123,7 +196,10 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource
     {
         tempvalue = ""
         tempvalue = catergoryNameList[indexPath.row]
+        print("\(tempvalue)")
         loadtabledata()
+        loadsegue()
+        
     }
 
 }

@@ -54,7 +54,7 @@ class CategoryViewController: UIViewController
                 contentsForPicker.insert("TopLevel", at: 0)
                 for  cname in fetchedValues
                 {
-                    contentsForPicker.append(cname.value(forKeyPath: "categoryName") as! String? ?? "n/a")
+                    contentsForPicker.append(cname.value(forKeyPath: "categoryName") as! String? ?? "")
                 }
             }
         }
